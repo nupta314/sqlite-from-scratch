@@ -121,7 +121,7 @@ Table *new_table() {
 }
 
 void free_table(Table *table) {
-  for (uint32_t i = 0; table->pages[i]; i++) {
+  for (uint32_t i = 0; table->pages[i] && i < TABLE_MAX_PAGES; i++) {
     free(table->pages[i]);
   }
   free(table);
@@ -144,7 +144,7 @@ PrepareResult prepare_statement(InputBuffer *input_buffer,
     int args_assigned = sscanf(
         input_buffer->buffer, "insert %d %s %s", &(statement->row_to_insert.id),
         statement->row_to_insert.username, statement->row_to_insert.email);
-    if (args_assigned < 3) {
+    if (args_assigned != 3) {
       return PREPARE_SYNTAX_ERROR;
     }
     return PREPARE_SUCCESS;
